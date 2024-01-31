@@ -1,0 +1,8 @@
+bot:
+  username: DevValityTgBot
+  token: xxx
+
+chats:
+  tech.vality.chat.id: "xxx"
+  all.hands.chat.id: "yyy"
+  vality.chat.id: "zzz"
