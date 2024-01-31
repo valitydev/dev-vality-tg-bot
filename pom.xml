@@ -19,6 +19,9 @@
     <properties>
         <kotlin.version>1.9.20</kotlin.version>
         <jackson.version>2.16.1</jackson.version>
+        <server.port>8022</server.port>
+        <management.port>8023</management.port>
+        <exposed.ports>${server.port} ${management.port}</exposed.ports>
     </properties>
 
     <dependencies>
