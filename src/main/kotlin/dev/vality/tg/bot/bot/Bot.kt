@@ -1,7 +1,7 @@
 package dev.vality.tg.bot.bot
 
 import dev.vality.tg.bot.constants.ActionsMenuItem.START_MENU
-import dev.vality.tg.bot.constants.UserStatuses.Companion.ALLOWED_USER_STATUSES
+import dev.vality.tg.bot.service.AuthUserService
 import dev.vality.tg.bot.service.CallbackCommandService
 import dev.vality.tg.bot.service.MainMenuService
 import dev.vality.tg.bot.utils.UserUtils
@@ -23,6 +23,7 @@ private val log = KotlinLogging.logger {}
 class Bot(
     private val mainMenuService: MainMenuService,
     private val callbackCommandService: CallbackCommandService,
+    private val authUserService: AuthUserService,
 ) : TelegramLongPollingBot() {
 
     @Value("\${bot.username}")
@@ -38,11 +39,9 @@ class Bot(
         try {
             val userId = UserUtils.getUserId(update)
             val chatMember: ChatMember = execute(GetChatMember(valityChatId, userId))
-            if (!isUserPermission(chatMember)) {
-                log.info { "User ${UserUtils.getUserName(update)} not found in chat" }
-                val message = SendMessage()
-                message.setChatId(UserUtils.getUserId(update))
-                message.text = "У вас нет прав на взаимодействие с данным ботом"
+            if (!authUserService.isUserPermission(chatMember)) {
+                val message = authUserService.createUserNotFoundMessage(update)
+                execute(message)
             }
 
             if (update.hasMessage()) {
@@ -90,8 +89,5 @@ class Bot(
     @Deprecated("Deprecated in Java")
     override fun getBotToken(): String {
         return token
-    }
-    fun isUserPermission(chatMember: ChatMember): Boolean {
-        return ALLOWED_USER_STATUSES.contains(chatMember.status)
     }
 }
