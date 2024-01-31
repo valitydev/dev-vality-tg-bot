@@ -2,7 +2,6 @@ package dev.vality.tg.bot.bot
 
 import dev.vality.tg.bot.constants.ActionsMenuItem.START_MENU
 import dev.vality.tg.bot.constants.UserStatuses.Companion.ALLOWED_USER_STATUSES
-import dev.vality.tg.bot.exception.TgBotException
 import dev.vality.tg.bot.service.CallbackCommandService
 import dev.vality.tg.bot.service.MainMenuService
 import dev.vality.tg.bot.utils.UserUtils
@@ -27,16 +26,25 @@ class Bot(
 ) : TelegramLongPollingBot() {
 
     @Value("\${bot.username}")
-    private val botUsername: String? = null
+    lateinit var botUser: String
 
     @Value("\${bot.token}")
-    private val botToken: String? = null
+    lateinit var token: String
 
     @Value("\${chats.vality.chat.id}")
-    private val valityChatId: String? = null
+    lateinit var valityChatId: String
 
     override fun onUpdateReceived(update: Update) {
         try {
+            val userId = UserUtils.getUserId(update)
+            val chatMember: ChatMember = execute(GetChatMember(valityChatId, userId))
+            if (!isUserPermission(chatMember)) {
+                log.info { "User ${UserUtils.getUserName(update)} not found in chat" }
+                val message = SendMessage()
+                message.setChatId(UserUtils.getUserId(update))
+                message.text = "У вас нет прав на взаимодействие с данным ботом"
+            }
+
             if (update.hasMessage()) {
                 if (update.message.text.equals(START_MENU)) {
                     handleStartMessage(update)
@@ -76,52 +84,14 @@ class Bot(
     }
 
     override fun getBotUsername(): String {
-        return botUsername!!
+        return botUser
     }
 
     @Deprecated("Deprecated in Java")
     override fun getBotToken(): String {
-        return botToken!!
+        return token
     }
-
-    fun isUserPermission(update: Update?): Boolean {
-        val userId: Long = UserUtils.getUserId(update!!)
-        val userName: String = UserUtils.getUserName(update)
-        try {
-            return isChatMemberPermission(userId)
-        } catch (e: TelegramApiException) {
-            checkExceptionIsUserInChat(e, userName, userId)
-            throw TgBotException(String.format("Error while checking user %s permissions", userName), e)
-        }
-    }
-
-    @Throws(TelegramApiException::class)
-    fun isChatMemberPermission(userId: Long): Boolean {
-        val chatMember: ChatMember =
-            execute(GetChatMember(valityChatId!!, userId))
-        if (ALLOWED_USER_STATUSES.contains(chatMember.status)) {
-            return true
-        } else {
-            val message = SendMessage()
-            message.setChatId(userId)
-            message.text = "У вас нет прав на vality"
-            execute(message)
-            return false
-        }
-    }
-
-    private fun checkExceptionIsUserInChat(e: TelegramApiException, userName: String, userId: Long) {
-        if (e.message!!.contains("[400] Bad Request: user not found")) {
-            log.info("User {} not found in chat", userName)
-            val message = SendMessage()
-            message.setChatId(userId)
-            message.text = "У вас нет прав на взаимодействие с данным ботом"
-            try {
-                execute(message)
-                throw TgBotException(String.format("User %s don't have permissions", userName), e)
-            } catch (ex: TelegramApiException) {
-                throw TgBotException(String.format("Error while checking user %s permissions", userName), e)
-            }
-        }
+    fun isUserPermission(chatMember: ChatMember): Boolean {
+        return ALLOWED_USER_STATUSES.contains(chatMember.status)
     }
 }

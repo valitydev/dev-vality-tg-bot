@@ -11,10 +11,10 @@ import org.telegram.telegrambots.meta.api.objects.Update
 class CallbackCommandService {
 
     @Value("\${chats.all.hands.chat.id}")
-    private val allHandsChatId: String? = null
+    lateinit var allHandsChatId: String
 
     @Value("\${chats.tech.vality.chat.id}")
-    private val techValityChatId: String? = null
+    lateinit var techValityChatId: String
 
     fun handleCallbackMessage(update: Update) =
         when (update.message.replyToMessage.text) {
@@ -36,7 +36,7 @@ class CallbackCommandService {
             text = "Создана задача на описание данной функции процессинга. Спасибо! \uD83D\uDE0A"
         },
         SendMessage().apply {
-            chatId = techValityChatId!!
+            chatId = techValityChatId
             text = update.message.text
         },
     )
@@ -47,7 +47,7 @@ class CallbackCommandService {
             text = "Вопрос принят и будет рассмотрен на all hands. Спасибо! \uD83D\uDE0A"
         },
         SendMessage().apply {
-            chatId = allHandsChatId!!
+            chatId = allHandsChatId
             text = update.message.text
         },
     )

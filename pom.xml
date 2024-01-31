@@ -3,9 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>dev.vality</groupId>
+        <artifactId>service-parent-pom</artifactId>
+        <version>2.1.5</version>
+    </parent>
+
     <artifactId>dev-vality-tg-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <groupId>dev.vality</groupId>
     <packaging>jar</packaging>
 
     <name>dev-vality-tg-bot</name>
@@ -147,7 +152,6 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
-                <version>1.9.22</version>
                 <configuration>
                     <args>
                         <arg>-Xjsr305=strict</arg>
@@ -195,11 +199,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.12.1</version>
             </plugin>
         </plugins>
     </build>

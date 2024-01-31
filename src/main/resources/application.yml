@@ -1,8 +1,8 @@
 bot:
   username: DevValityTgBot
-  token: xxx
+  token: 6342882938:AAHrX5sNoKEJonbjjmBQMylqWSjgg1btEsA
 
 chats:
-  tech.vality.chat.id: "xxx"
-  all.hands.chat.id: "yyy"
-  vality.chat.id: "zzz"
+  tech.vality.chat.id: "-1001994489354"
+  all.hands.chat.id: "-1002121227231"
+  vality.chat.id: "-1002121227231"
