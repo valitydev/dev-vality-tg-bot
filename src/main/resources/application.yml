@@ -1,6 +1,46 @@
+management:
+  security:
+    flag: false
+  server:
+    port: ${management.port}
+  metrics:
+    tags:
+      application: ${project.name}
+    export:
+      prometheus:
+        enabled: true
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+spring:
+  application:
+    name: '@project.name@'
+  output:
+    ansi:
+      enabled: always
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    vault:
+      kv:
+        enabled: true
+      uri: https://vault.empayre.com:443
+      authentication: TOKEN
+      scheme: http
+      token: "123456"
+
 bot:
   username: DevValityTgBot
-  token: xxx
+  token: ${botToken}
 
 chats:
   tech.vality.chat.id: "xxx"
