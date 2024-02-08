@@ -16,11 +16,10 @@ class MainMenuService {
     fun isMenuCommand(update: Update) = update.message.text.matches(Regex("^/.*"))
 
     fun initMenu(): SetMyCommands {
-        val c1 = BotCommand(ActionsMenuItem.START, "Start the Bot")
-        val c2 = BotCommand(ActionsMenuItem.ASK_QUESTION_CTO, "Задать вопрос CTO")
-        val c3 = BotCommand(ActionsMenuItem.ASK_TECH_INFO, "Запросить техническое описание работы процессинга")
+        val askCto = BotCommand(ActionsMenuItem.ASK_QUESTION_CTO, "Задать вопрос CTO")
+        val ascTechInfo = BotCommand(ActionsMenuItem.ASK_TECH_INFO, "Запросить техническое описание работы процессинга")
         return SetMyCommands().apply {
-            commands = arrayListOf(c1, c2, c3)
+            commands = arrayListOf(askCto, ascTechInfo)
         }
     }
 
